@@ -1,6 +1,6 @@
 # Advent of Code Utilities
 
-This repository contains the utilities I for solving [Advent of Code](https://adventofcode.com) challenges.
+This repository contains the utilities I use for solving [Advent of Code](https://adventofcode.com) challenges.
 While I usually solve the challenges in Python, you may find the tooling useful for other languages as well.
 
 I use part of [exoji2e's `runner.py` script](https://github.com/exoji2e/aoc22)
