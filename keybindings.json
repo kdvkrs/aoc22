@@ -1,0 +1,64 @@
+[
+    {
+        // "samples": Run sample(s) with current file (NO debug output)
+        "key": "ctrl+a s",
+        "command": "terminalCommandKeys.run",
+        "args": {
+            "cmd": "for f in inputs/s*.in; echo ===== EXECUTING {$f} =====; cat {$f} | ${file}; echo; end"
+            // if you're using bash/zsh:
+            // "cmd": "for f in inputs/s*.in; do echo ===== EXECUTING $f =====; cat $f | ${file}; echo; done"
+        }
+    },
+    {
+        // "debug": Run sample(s) with current file WITH debug output
+        "key": "ctrl+a d",
+        "command": "terminalCommandKeys.run",
+        "args": {
+            "cmd": "for f in inputs/s*.in; echo ===== EXECUTING {$f} =====; cat {$f} | ${file} -v; echo; end"
+            // if you're using bash/zsh:
+            // "cmd": "for f in inputs/s*.in; do echo ===== EXECUTING $f =====; cat $f | ${file} -v; echo; done"
+        }
+    },
+    {
+        // "input": Run input with current file (NO debug output)
+        "key": "ctrl+a i",
+        "command": "terminalCommandKeys.run",
+        "args": {
+            "cmd": "cat inputs/input.in | ${file}"
+        }
+    },
+    {
+        // "verbose": Run input with current file WITH debug output
+        "key": "ctrl+a v",
+        "command": "terminalCommandKeys.run",
+        "args": {
+            "cmd": "cat inputs/input.in | ${file} -v"
+        }
+    },
+    {
+        // "sUbmit": Run input with current file WITHOUT debug output and copy result using xclip
+        "key": "ctrl+a u",
+        "command": "terminalCommandKeys.run",
+        "args": {
+            "cmd": "cat inputs/input.in | ${file} | tee /dev/stderr | tr -d '\n' | xclip -sel clip"
+        }
+    },
+    {
+        // "prepare": prepare the current day (and start terminalcommandkeys console, that's the main point)
+        "key": "ctrl+a p",
+        "command": "terminalCommandKeys.run",
+        "args": {
+            "cmd": "python3 ${workspaceRoot}/prepare.py (date +%d) && cd day(date +%d)"
+            // if you're using bash/zsh:
+            // "cmd": "bash -c 'python3 ${workspaceRoot}/prepare.py `date +%d`' && cd day`date +%d`"
+        }
+    },
+    {
+        // "part 2": Copy part1 to part 2
+        "key": "ctrl+a v",
+        "command": "terminalCommandKeys.run",
+        "args": {
+            "cmd": "cp -i part1.py part2.py"
+        }
+    }
+]
