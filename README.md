@@ -38,6 +38,7 @@ bindings can switch between running the script with and without debug output.
 - Copy your session token from adventofcode.com to a file called `secret.py` and assign it as a string to the variable `session` (see `secret.py.example`)
 - Make sure `YEAR` in `prepare.py` is set to the year you want to solve the challenges for
 - Check that required packages for `prepare.py` are installed: (`pip3 -r requirements.txt`)
+    - Alternatively, if you use the [Nix Package Manager](https://nixos.org/nix/), you can use the provided `shell.nix` to spawn a `nix-shell` with the required packages.
 - (Optional, but recommended) Install and configure `terminal-command-keys`:
     - Copy the content of `keybindings.json` to your VSCode keybindings (Ctrl+Shift+P -> "Preferences: Open Keyboard Shortcuts (JSON)")
     - Check that keybindings do not interfere with your default ones; You will most likely have to change the prefix for the keybindings to something other than `Ctrl+A` if you are not using `vim` keybindings. 
