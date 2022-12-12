@@ -55,7 +55,7 @@
     },
     {
         // "part 2": Copy part1 to part 2
-        "key": "ctrl+a v",
+        "key": "ctrl+a 2",
         "command": "terminalCommandKeys.run",
         "args": {
             "cmd": "cp -i part1.py part2.py"
