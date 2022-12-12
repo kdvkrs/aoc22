@@ -5,4 +5,4 @@ This repository contains my solutions for the
 challenges as well as the utilities I use for improving my Advent of Code
 workflow. These utilities are kept in a [separate repository](https://github.com/kdvkrs/aoc_util)
 (which contains more information about them as well as their intended usage) and
-are a secondary upstream for this repository.
+which is secondary upstream for this repository (so it doesn't have to be forked multiple times).
