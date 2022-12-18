@@ -25,10 +25,11 @@ def main():
         ymax, ymin = max(ymax, c[1]), min(ymin, c[1])
         zmax, zmin = max(zmax, c[2]), min(zmin, c[2])
 
-    # make bounding box for search slightly larger
+    # make ("outer") bounding box for search slightly larger
     bbox = (xmax+1, xmin-1, ymax+1, ymin-1, zmax+1, zmin-1)
-    # threshold is (actual) bounding box volume - droplet volume
-    TH = (xmax-xmin)*(ymax-ymin)*(zmax-zmin)-len(cubes)
+
+    # threshold is difference between "outer" and proper bounding box 
+    TH = (bbox[0]-bbox[1])*(bbox[2]-bbox[3])*(bbox[4]-bbox[5])-(xmax-xmin)*(ymax-ymin)*(zmax-zmin)
 
     # fast lookup
     cubes = set(cubes)
