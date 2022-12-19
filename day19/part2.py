@@ -14,9 +14,7 @@ import re
 
 EXP = re.compile(r"Blueprint (\d+): Each ore robot costs (\d+) ore. Each clay robot costs (\d+) ore. Each obsidian robot costs (\d+) ore and (\d+) clay. Each geode robot costs (\d+) ore and (\d+) obsidian.")
 
-from functools import lru_cache, reduce
-from collections import deque
-from bisect import insort
+from functools import reduce
 
 def main():
     bp = EXP.findall(sys.stdin.read())
@@ -88,7 +86,6 @@ def main():
         debug(f"Blueprint {b[0]}: found result {x}")
     
     print(reduce(lambda a,b: a*b, res ,1))
-    #print(sum((i+1)*r for i, r in enumerate(res)))
 
 
 
