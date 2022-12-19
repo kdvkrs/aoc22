@@ -5,5 +5,6 @@ pkgs.mkShell {
     pkgs.python310Packages.requests
     pkgs.python310Packages.progressbar2
     pkgs.python310
+    pkgs.pypy3
   ];
 }
