@@ -21,7 +21,7 @@ def main():
 
     END = 24
     # tweak until convergence
-    MAXLEN = 3000
+    MAXLEN = 100
 
 
     def heur(state):
