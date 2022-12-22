@@ -37,32 +37,21 @@ def main(part=2):
 
     faces = []
     fc = 0
-    facepos = {}
+    faceoffs = {}
     for y in range(0,len(b)//FACELEN):
         fr = []
         for x in range(0, ml//FACELEN):
             if b[y*FACELEN][x*FACELEN] != EC:
                 fc += 1
                 fr.append(fc)
-                facepos[fc] = (y*FACELEN,x*FACELEN)
+                faceoffs[fc] = (y*FACELEN,x*FACELEN)
             else:
                 fr.append(0)
         faces.append(fr)
+    
+    # face adjacencies
     adj = {c: [None,None,None,None] for c in range(1,fc+1)}
     
-    # "easy" adjacencies (base)
-    for y, fy in enumerate(faces):
-        for x, f in enumerate(fy):
-            if f != 0:
-                if y-1 >= 0 and faces[y-1][x] != 0:
-                    adj[f][0] = (faces[y-1][x],0)
-                if x+1 < len(fy) and fy[x+1] != 0:
-                    adj[f][1] = (fy[x+1],1)
-                if y+1 < len(faces) and faces[y+1][x] != 0:
-                    adj[f][2] = (faces[y+1][x],2)
-                if x-1 >= 0 and fy[x-1] != 0:
-                    adj[f][3] = (fy[x-1],3)
-
     if part == 1:
         def scanx(yy, start, right=True):
             fml = len(faces[0])
@@ -76,10 +65,8 @@ def main(part=2):
 
         def scany(xx, start, down=True):
             for y in range(1,ml+1):
-                if down:
-                    yy = (y + start) % len(faces)
-                else:
-                    yy = (start - y) % len(faces)
+                if down: yy = (y + start) % len(faces)
+                else: yy = (start - y) % len(faces)
                 if faces[yy][xx] != 0:
                     return faces[yy][xx]
 
@@ -94,6 +81,19 @@ def main(part=2):
         debug(adj)
 
     else:
+        # "easy" adjacencies (base)
+        for y, fy in enumerate(faces):
+            for x, f in enumerate(fy):
+                if f != 0:
+                    if y-1 >= 0 and faces[y-1][x] != 0:
+                        adj[f][0] = (faces[y-1][x],0)
+                    if x+1 < len(fy) and fy[x+1] != 0:
+                        adj[f][1] = (fy[x+1],1)
+                    if y+1 < len(faces) and faces[y+1][x] != 0:
+                        adj[f][2] = (faces[y+1][x],2)
+                    if x-1 >= 0 and fy[x-1] != 0:
+                        adj[f][3] = (fy[x-1],3)
+
         # build transitive adjacencies
         while any(any(x is None for x in c) for c in adj.values()):
             for f,a in adj.items():
@@ -108,10 +108,9 @@ def main(part=2):
                                     d = (j - (r-i))%4
                                     # safeguards overwriting previous dirs 
                                     if a[d] is None:
-                                        # direction is opposite of (+2) relative rotation (rr-r) + transitive direction (j)
+                                        # direction is: 
+                                        # opposite of (+2) relative rotation (rr-r) + transitive direction (j)
                                         adj[f][d] = (fff, (rr-r+j+2)%4)
-
-
 
     def face(y,x):
         if 0 <= y < len(b) and 0 <= x < ml:
@@ -120,23 +119,21 @@ def main(part=2):
             return 0
 
     def next(y,x,dir):
-        py,px = y,x
-        # up
-        if dir == 0: py -= 1
-        # right
-        elif dir == 1: px += 1
-        # down
-        elif dir == 2: py += 1
-        # left
-        elif dir == 3: px -= 1
+        nx,ny = y,x
+
+        # direction increment, 0=up, 1=right, 2=down, 3=left
+        if dir == 0: nx -= 1
+        elif dir == 1: ny += 1
+        elif dir == 2: nx += 1
+        elif dir == 3: ny -= 1
 
         f = face(y,x)
-        ff = face(py,px)
-        #debug("FACES", f,ff)
+        ff = face(nx,ny)
+
         if f != ff:
             # moved off face
             move, rot = adj[f][dir]
-            fpy, fpx = facepos[f]
+            fpy, fpx = faceoffs[f]
             fy, fx = y - fpy, x - fpx
 
             if dir % 2 == 0:
@@ -144,28 +141,19 @@ def main(part=2):
             else:
                 hold = fy
 
-            flip = (dir, rot) in [(0,2), (0,3), (1,2), (1,3), (2,0), (2,1), (3,0), (3,1)]
-            if flip:
+            if (dir ^ rot) in [2,3]:
                 hold = FACELEN - hold - 1
             
-            if rot == 0:
-                fx = hold
-                fy = FACELEN - 1
-            elif rot == 1:
-                fy = hold
-                fx = 0
-            elif rot == 2:
-                fx = hold
-                fy = 0
-            elif rot == 3:
-                fy = hold
-                fx = FACELEN-1
+            wrap = FACELEN - 1 if rot in [0,3] else 0
+            if rot % 2 == 0:
+                fy, fx = wrap, hold
+            else:
+                fy, fx = hold, wrap
 
-            poffy, poffx = facepos[move] 
-            py, px = poffy + fy, poffx + fx
+            nx, ny = faceoffs[move][0] + fy, faceoffs[move][1] + fx
             dir = rot
 
-        return py, px, dir
+        return nx, ny, dir
     
     y = 0 
     x = bs[y]
@@ -174,15 +162,13 @@ def main(part=2):
         dir = (dir + (1 if rot == "R" else -1)) % 4
         for _ in range(dis):
             py, px, pd = next(y, x, dir)
-            if b[py][px] == "#":
-                break
+            if b[py][px] == "#": break
             else:
                 y, x, dir = py, px, pd
     
-    # dirs in whole program are off by one (mod 4) from description...
+    # dirs in whole program are off by one (mod 4) from description, whoops
     print(1000*(y+1)+(x+1)*4+(dir-1)%4)
 
 
 if __name__ == "__main__":
-    main(part=1)
-    #main(part=2)
+    main(part=2)
