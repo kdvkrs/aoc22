@@ -1,12 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env pypy3
 
-from part1 import *
-
-
-def main():
-    debug("Hello Part2")
+from part1 import main
 
 # ==================================================================== #
 
 if __name__ == '__main__':
-    main()
+    main(part=2)
