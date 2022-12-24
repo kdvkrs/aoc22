@@ -58,13 +58,13 @@ def main(part=1):
                     if (nm, nr, nc) not in seen and not nz[nr][nc]:
                         insort(q, (m+1,nr,nc)) 
 
-    entrance, valley = (0,1), (NR-1, NC-2)
-    m1 = bfs(entrance, valley, 0)
+    valley_entrance, valley_exit = (0,1), (NR-1, NC-2)
+    m1 = bfs(valley_entrance, valley_exit, 0)
     if part == 1:
         print(m1)
     else:
-        m2 = bfs(valley, entrance, m1)
-        m3 = bfs(entrance, valley, m2)
+        m2 = bfs(valley_exit, valley_entrance, m1)
+        m3 = bfs(valley_entrance, valley_exit, m2)
         print(m3)
 
 
