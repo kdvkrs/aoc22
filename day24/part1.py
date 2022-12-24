@@ -1,61 +1,34 @@
 #!/usr/bin/env pypy3
 
 import sys
-
-VERBOSE = "-v" in sys.argv
-
-# ==================================================================== #
-
 import math
 from collections import deque
 from bisect import insort
 
 
-def plot(b, z):
-    if VERBOSE:
-        bb = [[x for x in l] for l in b] 
-        for i,r in enumerate(z):
-            for j,c in enumerate(r):
-                if len(c) == 1:
-                    bb[i][j] = c[0]
-                elif len(c) > 1:
-                    bb[i][j] = str(len(c))
-        print("\n".join(["".join(x) for x in bb]))
-
-
 def step(b, zz):
     zn = [[[] for _ in l] for l in zz]
+
+    def checkadd(z,r,c,wr,wc):
+        if b[r][c] == '#':
+            zn[wr][wc].append(z)
+        else:
+            zn[r][c].append(z)
+
     for r, zr in enumerate(zz):
         for c, zc in enumerate(zr):
             for z in zc:
-                if z == ">":
-                    if b[r][c+1] == "#":
-                        zn[r][1].append(z)
-                    else:
-                        zn[r][c+1].append(z)
-                elif z == "<":
-                    if b[r][c-1] == "#":
-                        zn[r][-2].append(z)
-                    else:
-                        zn[r][c-1].append(z)
-                elif z == "^":
-                    if b[r-1][c] == "#":
-                        zn[-2][c].append(z)
-                    else:
-                        zn[r-1][c].append(z)
-                elif z == "v":
-                    if b[r+1][c] == "#":
-                        zn[1][c].append(z)
-                    else:
-                        zn[r+1][c].append(z)
+                if z == ">": checkadd(z,r,c+1,r,1)
+                elif z == "<": checkadd(z,r,c-1,r,-2)
+                elif z == "^": checkadd(z,r-1,c,-2,c)
+                elif z == "v": checkadd(z,r+1,c,1,c)
     return zn
 
 
 def main(part=1):
-    lines = sys.stdin.read().splitlines()
     # b...board z...bliZZard
-    b = [l.replace(">",".").replace("<",".").replace("v",".").replace("^",".") for l in lines]
-    z = [[[x] if x in "<>^v" else [] for x in l] for l in lines]
+    b = sys.stdin.read().splitlines()
+    z = [[[x] if x in "<>^v" else [] for x in l] for l in b]
 
     NC = len(b[0])
     NR = len(b)
@@ -67,13 +40,11 @@ def main(part=1):
         Z.append(z)
 
     def bfs(start, end, startmin):
-        sr, sc = start
-        er, ec = end
         seen = set() 
-        q = deque([(startmin, sr, sc)]) 
+        q = deque([(startmin, *start)]) 
         while q:
             m, pr, pc = q.popleft()
-            if (pr, pc) == (er, ec):
+            if (pr, pc) == end:
                 return m
             if (m%NZ, pr, pc) in seen:
                 continue
@@ -87,12 +58,13 @@ def main(part=1):
                     if (nm, nr, nc) not in seen and not nz[nr][nc]:
                         insort(q, (m+1,nr,nc)) 
 
-    m1 = bfs((0,1), (NR-1, NC-2),0)
+    entrance, valley = (0,1), (NR-1, NC-2)
+    m1 = bfs(entrance, valley, 0)
     if part == 1:
         print(m1)
     else:
-        m2 = bfs((NR-1, NC-2), (0,1), m1)
-        m3 = bfs((0,1), (NR-1, NC-2), m2)
+        m2 = bfs(valley, entrance, m1)
+        m3 = bfs(entrance, valley, m2)
         print(m3)
 
 
